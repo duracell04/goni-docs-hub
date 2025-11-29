@@ -1,6 +1,6 @@
 "use client";
 
-import { TocItem } from "@/lib/content";
+import { TocItem } from "@/lib/goni-content";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 

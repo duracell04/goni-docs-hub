@@ -2,11 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { getSections } from "@/lib/content";
+import { SectionNav, pageHref } from "@/lib/goni-content";
 import { cn } from "@/lib/utils";
 
-export function Sidebar() {
-  const sections = getSections();
+interface SidebarProps {
+  sections: SectionNav[];
+}
+
+export function Sidebar({ sections }: SidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -26,11 +29,8 @@ export function Sidebar() {
 
             <div className="space-y-1">
               {section.pages.map((page) => {
-                const path = section.id === "overview" ? "/" : `/${section.id}/${page.slug.join("/")}`;
-                const isActive =
-                  path === "/"
-                    ? pathname === "/"
-                    : pathname === path || pathname?.startsWith(`${path}/`);
+                const path = pageHref(page);
+                const isActive = pathname === path || pathname?.startsWith(`${path}/`);
 
                 return (
                   <Link

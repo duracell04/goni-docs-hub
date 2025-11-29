@@ -2,11 +2,12 @@ import Link from "next/link";
 import React, { ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { getAllPages, slugifyHeading } from "@/lib/content";
+import { DocPage, pageHref, slugifyHeading } from "@/lib/goni-content";
 
 interface MarkdownRendererProps {
   content: string;
-  currentSection: string;
+  pages: DocPage[];
+  currentSection?: string;
 }
 
 function extractText(node: ReactNode): string {
@@ -27,33 +28,34 @@ const Heading = (Tag: "h2" | "h3") =>
     );
   };
 
-export function MarkdownRenderer({ content, currentSection }: MarkdownRendererProps) {
-  const allPages = getAllPages();
+export function MarkdownRenderer({ content, pages, currentSection }: MarkdownRendererProps) {
+  const transformLink = (href: string | null | undefined) => {
+    if (!href) return "";
 
-  const transformLink = (href: string) => {
     if (href.startsWith("http://") || href.startsWith("https://")) {
       return href;
     }
 
     if (href.endsWith(".md")) {
-      let cleanHref = href.replace(/^\.\//, "").replace(/\.md$/, "");
+      const cleanHref = href.replace(/^\.\//, "").replace(/\.md$/, "").replace(/^\.\.\//, "");
 
-      if (cleanHref.startsWith("../")) {
-        cleanHref = cleanHref.replace(/^\.\.\//, "");
+      const targetPage = pages.find((page) => {
+        const pathWithoutExt = page.path.replace(/\.md$/, "");
+        const slugPath = page.slugSegments.join("/");
 
-        const targetPage = allPages.find((page) => {
-          const pagePath = page.section === "overview" ? "" : `${page.section}/${page.slug.join("/")}`;
-          return pagePath.endsWith(cleanHref);
-        });
+        return (
+          pathWithoutExt === cleanHref ||
+          pathWithoutExt.endsWith(`/${cleanHref}`) ||
+          slugPath === cleanHref ||
+          page.slug === cleanHref
+        );
+      });
 
-        if (targetPage) {
-          return targetPage.section === "overview"
-            ? "/"
-            : `/${targetPage.section}/${targetPage.slug.join("/")}`;
-        }
+      if (targetPage) {
+        return pageHref(targetPage);
       }
 
-      return `/${currentSection}/${cleanHref}`;
+      return currentSection ? `/${currentSection}/${cleanHref}` : `/docs/${cleanHref}`;
     }
 
     return href;

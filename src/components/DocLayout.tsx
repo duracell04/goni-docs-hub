@@ -1,16 +1,18 @@
 import { ReactNode } from "react";
 import { Sidebar } from "./Sidebar";
 import { ExternalLink } from "lucide-react";
+import { SectionNav } from "@/lib/goni-content";
 
 interface DocLayoutProps {
   children: ReactNode;
+  sections: SectionNav[];
 }
 
-export function DocLayout({ children }: DocLayoutProps) {
+export function DocLayout({ children, sections }: DocLayoutProps) {
   return (
     <div className="flex min-h-screen w-full bg-background">
       {/* Left Sidebar */}
-      <Sidebar />
+      <Sidebar sections={sections} />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col">
