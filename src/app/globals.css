@@ -2,57 +2,51 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
-
 @layer base {
   :root {
-    /* Goni Brand - Dark minimal, Swiss, lab-grade aesthetic */
-    --goni-bg: 225 63% 6%;          /* #050814 - main background */
-    --goni-surface: 220 50% 8%;      /* #0B1020 - cards, sidebar */
-    --goni-border: 217 37% 12%;      /* #111827 - borders */
-    --goni-text: 210 20% 98%;        /* #F9FAFB - primary text */
-    --goni-text-muted: 220 9% 65%;   /* #9CA3AF - secondary text */
-    --goni-accent: 199 89% 60%;      /* #38BDF8 - cyan accent */
-    --goni-accent-soft: 199 89% 60%; /* soft accent backgrounds */
-    --goni-danger: 0 92% 71%;        /* #F97373 - errors */
+    --goni-bg: 225 63% 6%;
+    --goni-surface: 220 50% 8%;
+    --goni-border: 217 37% 12%;
+    --goni-text: 210 20% 98%;
+    --goni-text-muted: 220 9% 65%;
+    --goni-accent: 199 89% 60%;
+    --goni-accent-soft: 199 89% 60%;
+    --goni-danger: 0 92% 71%;
 
-    /* Semantic tokens mapped to Goni brand */
     --background: var(--goni-bg);
     --foreground: var(--goni-text);
-    
+
     --card: var(--goni-surface);
     --card-foreground: var(--goni-text);
-    
+
     --popover: var(--goni-surface);
     --popover-foreground: var(--goni-text);
-    
+
     --primary: var(--goni-accent);
     --primary-foreground: var(--goni-bg);
-    
+
     --secondary: var(--goni-surface);
     --secondary-foreground: var(--goni-text);
-    
+
     --muted: var(--goni-surface);
     --muted-foreground: var(--goni-text-muted);
-    
+
     --accent: var(--goni-accent);
     --accent-foreground: var(--goni-bg);
-    
+
     --destructive: var(--goni-danger);
     --destructive-foreground: var(--goni-text);
-    
+
     --border: var(--goni-border);
     --input: var(--goni-border);
     --ring: var(--goni-accent);
-    
+
     --radius: 0.5rem;
   }
 }
 
 @layer base {
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+  @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
 }
 
 @layer base {
@@ -62,16 +56,16 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
     font-size: 16px;
     line-height: 1.6;
   }
 
-  code, pre {
-    font-family: 'JetBrains Mono', 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+  code,
+  pre {
+    font-family: "JetBrains Mono", "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
   }
 
-  /* Markdown content styling */
   .markdown-content h1 {
     @apply text-3xl font-semibold mb-6 text-foreground;
   }
@@ -98,7 +92,8 @@ All colors MUST be HSL.
     @apply text-primary hover:underline;
   }
 
-  .markdown-content ul, .markdown-content ol {
+  .markdown-content ul,
+  .markdown-content ol {
     @apply mb-4 ml-6;
   }
 
@@ -126,7 +121,8 @@ All colors MUST be HSL.
     @apply w-full border-collapse mb-4;
   }
 
-  .markdown-content th, .markdown-content td {
+  .markdown-content th,
+  .markdown-content td {
     @apply border border-border px-4 py-2 text-left;
   }
 

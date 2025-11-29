@@ -22,6 +22,13 @@ export interface Section {
   pages: Page[];
 }
 
+export function slugifyHeading(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-");
+}
+
 // Mock data structure - In production, this would be populated at build time
 // by scanning ../docs, ../hardware, ../software directories
 const mockContent: { [key: string]: Page[] } = {
@@ -342,10 +349,7 @@ export function getPageToc(markdown: string): TocItem[] {
   while ((match = headingRegex.exec(markdown)) !== null) {
     const level = match[1].length;
     const title = match[2].trim();
-    const id = title
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, "")
-      .replace(/\s+/g, "-");
+    const id = slugifyHeading(title);
 
     toc.push({ id, title, level });
   }

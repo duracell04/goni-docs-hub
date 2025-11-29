@@ -1,45 +1,58 @@
+import Link from "next/link";
+import React, { ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { Link } from "react-router-dom";
-import { getAllPages } from "@/lib/content";
+import { getAllPages, slugifyHeading } from "@/lib/content";
 
 interface MarkdownRendererProps {
   content: string;
   currentSection: string;
 }
 
+function extractText(node: ReactNode): string {
+  if (typeof node === "string") return node;
+  if (Array.isArray(node)) return node.map(extractText).join("");
+  if (React.isValidElement(node)) return extractText(node.props.children);
+  return "";
+}
+
+const Heading = (Tag: "h2" | "h3") =>
+  function HeadingComponent({ children, ...props }: { children?: ReactNode }) {
+    const text = extractText(children);
+    const id = slugifyHeading(text);
+    return (
+      <Tag id={id} {...props}>
+        {children}
+      </Tag>
+    );
+  };
+
 export function MarkdownRenderer({ content, currentSection }: MarkdownRendererProps) {
   const allPages = getAllPages();
 
-  // Convert relative markdown links to React Router links
   const transformLink = (href: string) => {
-    // If it's an absolute URL, keep it as is
     if (href.startsWith("http://") || href.startsWith("https://")) {
       return href;
     }
 
-    // If it's a markdown file reference
     if (href.endsWith(".md")) {
-      // Remove .md extension and ./
       let cleanHref = href.replace(/^\.\//, "").replace(/\.md$/, "");
-      
-      // Handle ../ (parent directory references)
+
       if (cleanHref.startsWith("../")) {
         cleanHref = cleanHref.replace(/^\.\.\//, "");
-        // Try to find the page in our content
+
         const targetPage = allPages.find((page) => {
           const pagePath = page.section === "overview" ? "" : `${page.section}/${page.slug.join("/")}`;
           return pagePath.endsWith(cleanHref);
         });
-        
+
         if (targetPage) {
-          return targetPage.section === "overview" 
-            ? "/" 
+          return targetPage.section === "overview"
+            ? "/"
             : `/${targetPage.section}/${targetPage.slug.join("/")}`;
         }
       }
-      
-      // Same directory reference
+
       return `/${currentSection}/${cleanHref}`;
     }
 
@@ -57,25 +70,21 @@ export function MarkdownRenderer({ content, currentSection }: MarkdownRendererPr
 
             if (isExternal) {
               return (
-                <a
-                  href={transformedHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  {...props}
-                >
+                <a href={transformedHref} target="_blank" rel="noopener noreferrer" {...props}>
                   {children}
                 </a>
               );
             }
 
             return (
-              <Link to={transformedHref} {...props}>
+              <Link href={transformedHref} {...props}>
                 {children}
               </Link>
             );
           },
+          h2: Heading("h2"),
+          h3: Heading("h3"),
           code: ({ inline, className, children, ...props }: any) => {
-            const match = /language-(\w+)/.exec(className || "");
             if (inline) {
               return (
                 <code className={className} {...props}>
@@ -83,8 +92,6 @@ export function MarkdownRenderer({ content, currentSection }: MarkdownRendererPr
                 </code>
               );
             }
-            // For block code, just return the code element
-            // react-markdown wraps it in <pre> automatically
             return (
               <code className={className} {...props}>
                 {children}

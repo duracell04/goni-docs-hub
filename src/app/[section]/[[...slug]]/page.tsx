@@ -1,34 +1,20 @@
-import { useParams, Navigate } from "react-router-dom";
+import { notFound } from "next/navigation";
 import { DocLayout } from "@/components/DocLayout";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { TableOfContents } from "@/components/TableOfContents";
 import { getPageBySlug, getPageToc } from "@/lib/content";
 import { ExternalLink } from "lucide-react";
-import { useEffect } from "react";
 
-export default function DocsPage() {
-  const params = useParams();
-  const section = params["*"]?.split("/")[0] || "overview";
-  const slugSegments = params["*"]?.split("/").slice(1) || [];
+interface PageProps {
+  params: { section: string; slug?: string[] };
+}
 
-  const page = getPageBySlug(section, slugSegments);
-
-  useEffect(() => {
-    // Add IDs to headings for TOC navigation
-    if (page) {
-      const headings = document.querySelectorAll(".markdown-content h2, .markdown-content h3");
-      headings.forEach((heading) => {
-        const id = heading.textContent
-          ?.toLowerCase()
-          .replace(/[^a-z0-9\s-]/g, "")
-          .replace(/\s+/g, "-") || "";
-        heading.id = id;
-      });
-    }
-  }, [page]);
+export default function SectionPage({ params }: PageProps) {
+  const slugSegments = params.slug ?? [];
+  const page = getPageBySlug(params.section, slugSegments);
 
   if (!page) {
-    return <Navigate to="/" replace />;
+    return notFound();
   }
 
   const tocItems = getPageToc(page.content);
@@ -36,11 +22,9 @@ export default function DocsPage() {
   return (
     <DocLayout>
       <div className="flex gap-8 max-w-[1400px] mx-auto">
-        {/* Main Content */}
         <article className="flex-1 max-w-[900px]">
-          <MarkdownRenderer content={page.content} currentSection={section} />
+          <MarkdownRenderer content={page.content} currentSection={params.section} />
 
-          {/* GitHub Link Footer */}
           <div className="mt-12 pt-6 border-t border-border">
             <a
               href={page.githubUrl}
@@ -54,7 +38,6 @@ export default function DocsPage() {
           </div>
         </article>
 
-        {/* Table of Contents */}
         <TableOfContents items={tocItems} />
       </div>
     </DocLayout>

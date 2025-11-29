@@ -10,6 +10,8 @@ export function TableOfContents({ items }: TableOfContentsProps) {
   const [activeId, setActiveId] = useState<string>("");
 
   useEffect(() => {
+    if (items.length === 0) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -18,15 +20,14 @@ export function TableOfContents({ items }: TableOfContentsProps) {
           }
         });
       },
-      { rootMargin: "-100px 0px -80% 0px" }
+      { rootMargin: "-100px 0px -80% 0px" },
     );
 
-    items.forEach((item) => {
-      const element = document.getElementById(item.id);
-      if (element) {
-        observer.observe(element);
-      }
-    });
+    const elements = items
+      .map((item) => document.getElementById(item.id))
+      .filter((element): element is Element => Boolean(element));
+
+    elements.forEach((element) => observer.observe(element));
 
     return () => observer.disconnect();
   }, [items]);
@@ -62,3 +63,4 @@ export function TableOfContents({ items }: TableOfContentsProps) {
     </div>
   );
 }
+"use client";
