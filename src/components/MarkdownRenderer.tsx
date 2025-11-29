@@ -75,6 +75,7 @@ export function MarkdownRenderer({ content, currentSection }: MarkdownRendererPr
             );
           },
           code: ({ inline, className, children, ...props }: any) => {
+            const match = /language-(\w+)/.exec(className || "");
             if (inline) {
               return (
                 <code className={className} {...props}>
@@ -82,12 +83,12 @@ export function MarkdownRenderer({ content, currentSection }: MarkdownRendererPr
                 </code>
               );
             }
+            // For block code, just return the code element
+            // react-markdown wraps it in <pre> automatically
             return (
-              <pre>
-                <code className={className} {...props}>
-                  {children}
-                </code>
-              </pre>
+              <code className={className} {...props}>
+                {children}
+              </code>
             );
           },
         }}
