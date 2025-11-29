@@ -38,8 +38,6 @@ export default function DocsPage() {
       <div className="flex gap-8 max-w-[1400px] mx-auto">
         {/* Main Content */}
         <article className="flex-1 max-w-[900px]">
-          <h1 className="text-3xl font-semibold mb-8 text-foreground">{page.title}</h1>
-          
           <MarkdownRenderer content={page.content} currentSection={section} />
 
           {/* GitHub Link Footer */}
