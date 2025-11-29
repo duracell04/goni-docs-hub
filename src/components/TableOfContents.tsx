@@ -1,3 +1,5 @@
+"use client";
+
 import { TocItem } from "@/lib/content";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
@@ -63,4 +65,3 @@ export function TableOfContents({ items }: TableOfContentsProps) {
     </div>
   );
 }
-"use client";
