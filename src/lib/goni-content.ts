@@ -69,11 +69,30 @@ function githubBlobUrl(path: string): string {
   return `https://github.com/${GONI_REPO}/blob/${GONI_BRANCH}/${path}`;
 }
 
+async function fetchGithub(path: string, accept: string): Promise<Response> {
+  const request = () =>
+    fetch(githubApiUrl(path), {
+      headers: githubHeaders(accept),
+      next: { revalidate: DEFAULT_REVALIDATE_SECONDS },
+    });
+
+  const first = await request();
+
+  // If a bad token is set, retry anonymously so public repos still work.
+  if (first.status === 401 && process.env.GONI_GITHUB_TOKEN) {
+    const retry = await fetch(githubApiUrl(path), {
+      headers: { Accept: accept },
+      next: { revalidate: DEFAULT_REVALIDATE_SECONDS },
+    });
+
+    if (retry.ok) return retry;
+  }
+
+  return first;
+}
+
 async function fetchGithubRaw(path: string): Promise<string> {
-  const res = await fetch(githubApiUrl(path), {
-    headers: githubHeaders("application/vnd.github.raw"),
-    next: { revalidate: DEFAULT_REVALIDATE_SECONDS },
-  });
+  const res = await fetchGithub(path, "application/vnd.github.raw");
 
   if (!res.ok) {
     throw new Error(`Failed to load ${path} from goni (${res.status})`);
@@ -98,10 +117,7 @@ export async function getDocsNav(): Promise<DocPage[]> {
 export async function listDocsFromFolder(): Promise<DocPage[]> {
   const url = githubApiUrl("docs");
 
-  const res = await fetch(url, {
-    headers: githubHeaders(),
-    next: { revalidate: DEFAULT_REVALIDATE_SECONDS },
-  });
+  const res = await fetchGithub("docs", "application/vnd.github+json");
 
   if (!res.ok) {
     throw new Error(`Failed to list docs/ from goni (${res.status})`);

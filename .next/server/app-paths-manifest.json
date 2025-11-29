@@ -1,3 +1,4 @@
 {
+  "/repo/[[...slug]]/page": "app/repo/[[...slug]]/page.js",
   "/page": "app/page.js"
 }
