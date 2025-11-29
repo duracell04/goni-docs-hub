@@ -8,90 +8,51 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Goni Brand - Dark minimal, Swiss, lab-grade aesthetic */
+    --goni-bg: 225 63% 6%;          /* #050814 - main background */
+    --goni-surface: 220 50% 8%;      /* #0B1020 - cards, sidebar */
+    --goni-border: 217 37% 12%;      /* #111827 - borders */
+    --goni-text: 210 20% 98%;        /* #F9FAFB - primary text */
+    --goni-text-muted: 220 9% 65%;   /* #9CA3AF - secondary text */
+    --goni-accent: 199 89% 60%;      /* #38BDF8 - cyan accent */
+    --goni-accent-soft: 199 89% 60%; /* soft accent backgrounds */
+    --goni-danger: 0 92% 71%;        /* #F97373 - errors */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
+    /* Semantic tokens mapped to Goni brand */
+    --background: var(--goni-bg);
+    --foreground: var(--goni-text);
+    
+    --card: var(--goni-surface);
+    --card-foreground: var(--goni-text);
+    
+    --popover: var(--goni-surface);
+    --popover-foreground: var(--goni-text);
+    
+    --primary: var(--goni-accent);
+    --primary-foreground: var(--goni-bg);
+    
+    --secondary: var(--goni-surface);
+    --secondary-foreground: var(--goni-text);
+    
+    --muted: var(--goni-surface);
+    --muted-foreground: var(--goni-text-muted);
+    
+    --accent: var(--goni-accent);
+    --accent-foreground: var(--goni-bg);
+    
+    --destructive: var(--goni-danger);
+    --destructive-foreground: var(--goni-text);
+    
+    --border: var(--goni-border);
+    --input: var(--goni-border);
+    --ring: var(--goni-accent);
+    
     --radius: 0.5rem;
-
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
   }
+}
 
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
+@layer base {
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 }
 
 @layer base {
@@ -101,5 +62,83 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  code, pre {
+    font-family: 'JetBrains Mono', 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+  }
+
+  /* Markdown content styling */
+  .markdown-content h1 {
+    @apply text-3xl font-semibold mb-6 text-foreground;
+  }
+
+  .markdown-content h2 {
+    @apply text-2xl font-semibold mt-12 mb-4 text-foreground;
+    scroll-margin-top: 2rem;
+  }
+
+  .markdown-content h3 {
+    @apply text-xl font-medium mt-8 mb-3 text-foreground;
+    scroll-margin-top: 2rem;
+  }
+
+  .markdown-content h4 {
+    @apply text-lg font-medium mt-6 mb-2 text-foreground;
+  }
+
+  .markdown-content p {
+    @apply mb-4 text-foreground;
+  }
+
+  .markdown-content a {
+    @apply text-primary hover:underline;
+  }
+
+  .markdown-content ul, .markdown-content ol {
+    @apply mb-4 ml-6;
+  }
+
+  .markdown-content li {
+    @apply mb-2;
+  }
+
+  .markdown-content code {
+    @apply bg-muted px-1.5 py-0.5 rounded text-sm;
+  }
+
+  .markdown-content pre {
+    @apply bg-card border border-border rounded-lg p-4 mb-4 overflow-x-auto;
+  }
+
+  .markdown-content pre code {
+    @apply bg-transparent p-0;
+  }
+
+  .markdown-content blockquote {
+    @apply border-l-4 border-primary pl-4 italic my-4 text-muted-foreground;
+  }
+
+  .markdown-content table {
+    @apply w-full border-collapse mb-4;
+  }
+
+  .markdown-content th, .markdown-content td {
+    @apply border border-border px-4 py-2 text-left;
+  }
+
+  .markdown-content th {
+    @apply bg-muted font-semibold;
+  }
+
+  .markdown-content img {
+    @apply max-w-full h-auto rounded-lg my-4;
+  }
+
+  .markdown-content hr {
+    @apply border-border my-8;
   }
 }
