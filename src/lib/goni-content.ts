@@ -2,7 +2,6 @@ const GONI_REPO = "duracell04/goni";
 const GONI_BRANCH = "main";
 
 const GITHUB_API_BASE = "https://api.github.com";
-const GITHUB_RAW_BASE = "https://raw.githubusercontent.com";
 
 const DEFAULT_REVALIDATE_SECONDS = 60;
 
@@ -36,15 +35,15 @@ export type TocItem = {
   level: number;
 };
 
-function githubHeaders(): HeadersInit {
+function githubHeaders(accept = "application/vnd.github+json"): HeadersInit {
   const token = process.env.GONI_GITHUB_TOKEN;
   return token
     ? {
         Authorization: `Bearer ${token}`,
-        Accept: "application/vnd.github+json",
+        Accept: accept,
       }
     : {
-        Accept: "application/vnd.github+json",
+        Accept: accept,
       };
 }
 
@@ -62,29 +61,34 @@ function normalizeMeta(meta: DocMeta): DocPage {
   };
 }
 
-function githubRawUrl(path: string): string {
-  return `${GITHUB_RAW_BASE}/${GONI_REPO}/${GONI_BRANCH}/${path}`;
+function githubApiUrl(path: string): string {
+  return `${GITHUB_API_BASE}/repos/${GONI_REPO}/contents/${path}?ref=${GONI_BRANCH}`;
 }
 
 function githubBlobUrl(path: string): string {
   return `https://github.com/${GONI_REPO}/blob/${GONI_BRANCH}/${path}`;
 }
 
-/**
- * Load docs/nav.json from the goni repo as the navigation manifest.
- */
-export async function getDocsNav(): Promise<DocPage[]> {
-  const url = githubRawUrl("docs/nav.json");
-
-  const res = await fetch(url, {
+async function fetchGithubRaw(path: string): Promise<string> {
+  const res = await fetch(githubApiUrl(path), {
+    headers: githubHeaders("application/vnd.github.raw"),
     next: { revalidate: DEFAULT_REVALIDATE_SECONDS },
   });
 
   if (!res.ok) {
-    throw new Error(`Failed to load docs/nav.json from goni (${res.status})`);
+    throw new Error(`Failed to load ${path} from goni (${res.status})`);
   }
 
-  const manifest = (await res.json()) as DocMeta[];
+  return res.text();
+}
+
+/**
+ * Load docs/nav.json from the goni repo as the navigation manifest.
+ */
+export async function getDocsNav(): Promise<DocPage[]> {
+  const raw = await fetchGithubRaw("docs/nav.json");
+  const manifest = JSON.parse(raw) as DocMeta[];
+
   return manifest.map(normalizeMeta);
 }
 
@@ -92,7 +96,7 @@ export async function getDocsNav(): Promise<DocPage[]> {
  * Fallback: list all .md files under docs/ if you don’t want a nav.json yet.
  */
 export async function listDocsFromFolder(): Promise<DocPage[]> {
-  const url = `${GITHUB_API_BASE}/repos/${GONI_REPO}/contents/docs`;
+  const url = githubApiUrl("docs");
 
   const res = await fetch(url, {
     headers: githubHeaders(),
@@ -128,17 +132,7 @@ export async function getAllPages(): Promise<DocPage[]> {
 }
 
 async function fetchMarkdown(path: string): Promise<string> {
-  const rawUrl = githubRawUrl(path);
-
-  const res = await fetch(rawUrl, {
-    next: { revalidate: DEFAULT_REVALIDATE_SECONDS },
-  });
-
-  if (!res.ok) {
-    throw new Error(`Failed to load ${path} from goni (${res.status})`);
-  }
-
-  return await res.text();
+  return fetchGithubRaw(path);
 }
 
 export function pageHref(page: DocPage): string {

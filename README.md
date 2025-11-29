@@ -71,3 +71,7 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.akalabs.io/features/custom-domain#custom-domain)
+
+## Loading Goni docs locally
+
+The app pulls markdown straight from the `duracell04/goni` repository at runtime. If that repo is private (or you hit GitHub rate limits), set a `GONI_GITHUB_TOKEN` with `repo` scope in your environment before running `pnpm dev`, `pnpm build`, or `pnpm start`.
